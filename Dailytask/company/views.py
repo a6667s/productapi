@@ -42,7 +42,7 @@ class Categoryview(APIView):
 
 class CategoryDetail(APIView):
     """
-    Retrieve, update or delete a Category instance.
+    GET, PUT or DELETE a Category instance.
     """
     def get_object(self, pk):
         try:
@@ -108,7 +108,7 @@ class Productview(APIView):
 
 class ProductDetail(APIView):
     """
-    Retrieve, update or delete a Product instance.
+    GET, PUT or DELETE a Product instance.
     """
     def get_object(self, pk):
         try:
