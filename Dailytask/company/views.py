@@ -11,6 +11,9 @@ from rest_framework import generics
 from rest_framework import status
 from django.db.models import Q 
 from rest_framework.viewsets import ModelViewSet
+from django_filters import rest_framework as filters
+# from .filters import ProductFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
@@ -153,17 +156,17 @@ class ProductSearch(APIView):
     def post(self,request):
         try:
             params=request.data 
+            obj=Product.objects.filter(is_deleted=False)
             if 'product_name' in params:
-                obj=Product.objects.filter(Q(is_deleted=False)) & Product.objects.filter(Q(product_name__icontains=params['product_name']))
+                obj=obj.filter(product_name__icontains=params['product_name'])
             if 'category_type' in params:
-                obj=Product.objects.filter(Q(is_deleted=False)) & Product.objects.filter(Q(category_type__category_name__icontains=params['category_type']))
+                obj=obj.filter(Q(category_type__category_name__icontains=params['category_type']))
             if 'product_colour'  in params:
-                obj=Product.objects.filter(Q(is_deleted=False)) & Product.objects.filter(product_colour__icontains=params['product_colour'])
+                obj=obj.filter(product_colour__icontains=params['product_colour'])
             if not obj:
                 return Response({"status":False,"message":"Requested Product not found"},status=status.HTTP_404_NOT_FOUND)
             serializer=ProductSerializer(obj,many=True)
             return Response({"status":True,"message":"Data fethced successfully","data":serializer.data},status=status.HTTP_200_OK)
         except Exception:
             return Response({"status":False,"message":"OOPS,Something went wrong"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
